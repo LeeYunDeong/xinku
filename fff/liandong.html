@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>jquery三级联动</title>
+		<style type="text/css">
+			* {
+				margin: 0;
+				padding: 0;
+			}
+
+			.box {
+				margin-left: 450px;
+			}
+
+			.box>div {
+				width: 200px;
+				float: left;
+				margin: 50px 20px;
+				border: 3px #747379 solid;
+			}
+
+			.box>div p {
+				cursor: pointer;
+				color: #FF1493;
+				text-align: center;
+				font-size: 16px;
+				font-weight: bold;
+			}
+
+			.box>div p:hover {
+				background-color: rgba(24.56.10.6);
+			}
+
+			.cl::after {
+				display: block;
+				content: '';
+				clear: both;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="box cl">
+			<div class="province">
+				<p>请选择省份</p>
+				<div id="provinceList"></div>
+			</div>
+			<div class="city">
+				<p>请选择城市</p>
+				<div id="cityList"></div>
+			</div>
+			<div class="area">
+				<p>请选择区/县</p>
+				<div id="areaList"></div>
+			</div>
+		</div>
+	</body>
+	<script src="js/jquery-2.2.4.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/json.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		// // 获取省的数据
+		// ajax('get', 'http://192.168.3.100:7436/territory/province', function(res) {
+		// 	// 处理ajax的回调
+		// 	let dataObj = JSON.parse(res);
+		// 	// console.log(dataObj);
+		// 	// 处理省份数据
+		// 	$('.province > p').click(function() {
+		// 		// 插入全部省份
+		// 		$.each(dataObj.data, function(index, elem) {
+		// 			// 追加省份标签
+		// 			$('#provinceList').append($(`<p class="provinceLi" id="${elem.provinceId}">${elem.province}</p>`));
+		// 		});
+		// 		// 选取某一个省份
+		// 		$('#provinceList > p').click(function() {
+		// 			// 设置省份名和省份id
+		// 			let provinceId = $(this).attr('id'); //省份ID
+		// 			$('.province > p').text($(this).text()).attr('id', provinceId);
+		// 			// 隐藏全部省份
+		// 			$('#provinceList > p').css('display', 'none');
+		// 			// console.log(provinceId);
+		// 			// 城市
+		// 			ajax('get', `http://192.168.3.100:7436/territory/${provinceId}/city`, (res) => {
+		// 				let cityObj = JSON.parse(res); //读取城市数据
+		// 				// console.log(cityObj);
+		// 				// 设置城市数据
+		// 				$('.city > p').click(function() {
+		// 					// 初始化城市
+		// 					$('#cityList').html('');
+		// 					// 插入全部城市
+		// 					$.each(cityObj.data, function(index, elem) {
+		// 						// 追加城市标签
+		// 						$('#cityList').append($(`<p id="${elem.cityId}">${elem.city}</p>`));
+		// 					});
+		// 					// 选取某一个城市
+		// 					$('#cityList > p').click(function() {
+		// 						// 设置城市名和城市id
+		// 						let cityId = $(this).attr('id');
+		// 						$('.city > p').text($(this).text()).attr('id', cityId);
+		// 						// 隐藏全部城市名
+		// 						$('#cityList > p').css('display', 'none');
+		// 						// 区县ajax
+		// 						ajax('get',`http://192.168.3.100:7436/territory/${cityId}/area`, (res) => {
+		// 							let areaObj = JSON.parse(res); // 读取区县
+		// 							// console.log(areaObj);
+		// 							// 设置区县数据
+		// 							$('.area > p').click(function(){
+		// 								// 初始化
+		// 								$('#areaList').html('');
+		// 								// 插入全部区县
+		// 								$.each(areaObj.data,function(index,elem){
+		// 									// 追加区县标签
+		// 									$('#areaList').append($(`<p>${elem.area}</p>`));
+		// 								});
+		// 								// 选取某一个区县
+		// 								$('#areaList > p').click(function(){
+		// 									$('.area > p').text($(this).text());
+		// 									// 隐藏全部区县
+		// 									$('#areaList > p').css('display','none');
+		// 								});
+		// 							});
+		// 						});
+		// 					});
+		// 				});
+		// 			}, null);
+		// 		});
+		// 	});
+		// }, null);
+		// JqueryAjax
+		// 省份
+		$('.province > p').click(function() {
+			// Ajax
+			$.ajax({
+				url: 'http://192.168.3.100:7436/territory/province',
+				type: 'get'
+			}).done(function(res) {
+				// 读取省份数据
+				// console.log(res);
+
+				// 设置省份数据
+				$.each(res.data, function(index, elem) {
+					// 追加省份标签
+					$('#provinceList').append($(`<p id="${elem.provinceId}">${elem.province}</p>`));
+				});
+				// 选取某一个省份
+				$('#provinceList > p').click(function() {
+					let provinceId = $(this).attr('id');
+					$('.province > p').text($(this).text());
+					// 隐藏全部省份
+					$('#provinceList > p').css('display', 'none');
+
+					// 城市
+					$('.city > p').click(function() {
+						// 打开Ajax
+						$.ajax({
+							url: `http://192.168.3.100:7436/territory/${provinceId}/city`,
+							type: 'get'
+						}).done(function(res) {
+							// 初始化城市
+							$('#cityList').html('');
+							// 设置城市数据
+							$.each(res.data, function(index, elem) {
+								// 追加城市标签
+								$('#cityList').append($(`<p id="${elem.cityId}">${elem.city}</p>`));
+							});
+							// 选取某一个城市
+							$('#cityList > p').click(function() {
+								// 设置城市名和城市id
+								let cityId = $(this).attr('id');
+								$('.city > p').text($(this).text()).attr('id', cityId);
+								// 隐藏全部城市名
+								$('#cityList > p').css('display', 'none');
+								// 区县
+								$('.area > p').click(function() {
+									// 打开Ajax
+									$.ajax({
+										url: `http://192.168.3.100:7436/territory/${cityId}/area`,
+										type: 'get'
+									}).done(function(res) {
+										// 初始化区县
+										$('#areaList').html('');
+										// 插入全部区县
+										$.each(res.data, function(index, elem) {
+											// 追加区县标签
+											$('#areaList').append($(`<p>${elem.area}</p>`));
+										});
+										// 选取某一个区县
+										$('#areaList > p').click(function() {
+											$('.area > p').text($(this).text());
+											// 隐藏全部区县
+											$('#areaList > p').css('display', 'none');
+										});
+									});
+								});
+							});
+						});
+					});
+				});
+			});
+		});
+	</script>
+</html>

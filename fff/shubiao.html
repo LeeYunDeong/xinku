@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>jQuery拖拽移动</title>
+		<style type="text/css">
+			*{
+			 margin: 0;
+			 padding: 0;
+			 }
+			 a{
+				 color: red;
+				 text-decoration: none;
+				 font-size: 100px;
+				 margin: 0 500px;
+			 }
+			 h3{
+			 display: block;
+			 width: 300px;
+			 height: 50px;
+			 text-align: center;
+			 line-height: 50px;
+			 background-color: #0076A9;
+			 
+			 }
+			 #login{
+			 width: 300px;
+			 height: 200px;
+			 margin: 0 auto;
+			 position: absolute;
+			 top: 250px;
+			 left: 500px;
+			 border: 1px solid #000000;
+			 background-color: #FFFFFF;
+			 
+			 display: none;
+			 }
+			 table{
+			 position: absolute;
+			 top: 50px;
+			 left: 0;
+			 width: 100%;
+			 height: 150px;
+			 text-align:center;
+			 }
+			 tr,td{
+			 border: none;
+			 }
+			 tr{
+			 height: 50px;
+			 }
+			 td{
+			 padding: 0 5px 0 5px;
+			 }
+			 #bg{
+			 width: 100%;
+			 height: 100%;
+			 background-color:cornflowerblue;
+			 position: absolute;
+			 top: 0;
+			 left: 0;
+			 display: none;
+			 }
+			 body{
+			 width: 100%;
+			 height: 600px;
+			 }
+		</style>
+	</head>
+	<body>
+		<a href="javascript:;" >登录</a>
+		 <div id="bg"></div>
+		 <form action="javascript:;" id="login" method="">
+		 <h3>欢迎登录！</h3>
+		 <table border="1" cellspacing="0" cellpadding="0">
+		 <tr>
+		  <td align="right">用户名：</td>
+		  <td align="left"><input type="text" name="userName"/></td>
+		 </tr>
+		 <tr>
+		  <td align="right">密码：</td>
+		  <td align="left"><input type="password" name="pwd"/></td>
+		 </tr>
+		 <tr>
+		  <td align="center" colspan="2">
+		  <input type="button" value="提交"/>
+		  &nbsp&nbsp&nbsp&nbsp&nbsp
+		  <input type="button" value="重置"/>
+		  </td>
+		 </tr>
+		 </table>
+		 </form>
+	</body>
+	<script src="../1016/js/jquery-2.2.4.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		 $(function () {
+		 // 点击登录跳转
+		 $("a").click(function () {
+		  $("#bg,#login").css("display","block");
+		 });
+		 // 定义变量
+		 var $mX;
+		 var $mY;
+		 var $move = false; // true是可以移动登录框
+		 // 鼠标按下事件
+		 $("#login").mousedown(function (event) {
+		  $(this).css("opacity",0.5); // 改变透明度
+		  $move = true;
+		  $('#login').css('cursor','move');
+		  // 得到鼠标与登录框原点之间的距离
+		  $mX = event.pageX-parseInt($(this).css("left"));
+		  $mY = event.pageY-parseInt($(this).css("top"));
+		 });
+		 // 鼠标移动事件
+		 $("#login").mousemove(function (event) {
+		  if($move){
+		  // 得到登录框要移动的量
+		  $(this).css("left",(event.pageX-$mX)+"px")
+		  $(this).css("top",(event.pageY-$mY)+"px")
+		  }
+		 }).mouseup(function () {
+		  // 鼠标弹起事件
+		  $('#login').css('cursor','default');
+		  $move = false;
+		  $(this).css("opacity",1);
+		 });
+		 });
+	</script>
+</html>
